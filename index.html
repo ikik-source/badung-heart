@@ -549,6 +549,39 @@ select.field-input option{background:#1a0f0f}
 </section>
 
 <script>
+// ── URL API Google Sheets ─────────────────────────────────────
+// Ganti dengan URL dari Apps Script deployment kamu
+const SHEET_URL = 'https://script.google.com/macros/s/GANTI_INI/exec';
+
+// ── Fungsi kirim data ke Google Sheets ───────────────────────
+function sendToSheet() {
+  // Hanya kirim jika URL sudah diisi
+  if (SHEET_URL.includes('GANTI_INI')) return;
+
+  fetch(SHEET_URL, {
+    method : 'POST',
+    mode   : 'no-cors', // wajib untuk Apps Script
+    headers: { 'Content-Type': 'application/json' },
+    body   : JSON.stringify({
+      nik      : S.nik,
+      nama     : S.nama,
+      gender   : S.gender,
+      age      : S.age,
+      weight   : S.weight,
+      height   : S.height,
+      bmi      : S.bmi.toFixed(1),
+      smoking  : S.smoking,
+      diabetes : S.diabetes,
+      cvd      : S.cvd,
+      systolic : S.systolic,
+      diastolic: S.diastolic,
+      exercise : S.exercise,
+      score    : S.score,
+      grade    : S.grade,
+      pct      : S.pct,
+    }),
+  }).catch(() => {}); // silent — tidak ganggu UX jika gagal
+}
 const S={lang:'id',gender:null,age:null,weight:null,height:null,smoking:null,diabetes:null,cvd:null,knowsBP:null,systolic:null,diastolic:null,exercise:null,nik:'',nama:'',score:0,bmi:0,grade:'',gradeKey:'',pct:'',breakdown:{},fhirJson:'',gradeColor:''};
 const T={
   id:{lbl_screening:'Skrining Kesehatan Jantung',landing_h1:'Apakah Kamu<br>Berisiko Jantung?',landing_sub:'Ayo Cari Tahu Sekarang',f1:'Skrining Risiko',f2:'Rekomendasi Faskes',f3:'SATUSEHAT FHIR',cek_btn:'Mulai Skrining',landing_footer:'FKIK Universitas Warmadewa · Kabupaten Badung',s1:'Pengenalan',s2:'Persetujuan',s3:'Kuisioner',s4:'Hasil',s5:'Rujukan',s1b:'Pengenalan',s2b:'Persetujuan',s3b:'Kuisioner',s4b:'Hasil',s5b:'Rujukan',s1c:'Pengenalan',s2c:'Persetujuan',s3c:'Kuisioner',s4c:'Hasil',s5c:'Rujukan',s1d:'Pengenalan',s2d:'Persetujuan',s3d:'Kuisioner',s4d:'Hasil',s5d:'Rujukan',s1e:'Pengenalan',s2e:'Persetujuan',s3e:'Kuisioner',s4e:'Hasil',s5e:'Rujukan',s5f:'Rujukan',pen_label:'Langkah 1 dari 5',pen_title:'Selamat Datang',pen_sub:'Website Skrining Jantung Kabupaten Badung',pen_about_lbl:'Badung Heart',pen_about:'Merupakan website <strong style="color:var(--tx)">skrining jantung</strong> yang bertujuan mengidentifikasi risiko penyakit jantung sejak dini serta memfasilitasi rujukan cepat ke fasilitas pelayanan kesehatan terdekat di Kabupaten Badung.',alur_label:'Alur Pengisian',flow1a:'Pengenalan',flow1b:'Website Badung Heart',flow2a:'Persetujuan',flow2b:'Pengguna Website Badung Heart',flow3a:'Pengisian Kuisioner',flow3b:'Data kesehatan & gaya hidup',flow4a:'Hasil',flow4b:'Skor risiko jantung Anda',flow5a:'Rekomendasi Rujukan',flow5b:'Fasilitas kesehatan terdekat',btn_back:'← Kembali',btn_next:'Lanjut →',con_label:'Langkah 2 dari 5',con_title:'Persetujuan',con_sub:'Baca dan pahami sebelum melanjutkan',c1:'Saya telah membaca dan memahami informasi terkait tujuan, manfaat, serta keterbatasan dari skrining jantung yang disediakan pada website ini.',c2:'Saya memahami bahwa hasil skrining ini bukan merupakan diagnosis medis dan tidak menggantikan konsultasi langsung dengan tenaga kesehatan profesional.',c3:'Saya bersedia memberikan data yang diperlukan secara jujur dan akurat untuk keperluan analisis risiko kesehatan jantung.',c4:'Saya memahami bahwa data yang saya berikan akan dijaga kerahasiaannya dan digunakan hanya untuk keperluan skrining serta pengembangan layanan.',c5:'Saya menyetujui bahwa segala keputusan terkait kesehatan tetap menjadi tanggung jawab saya, termasuk untuk melakukan pemeriksaan lanjutan apabila diperlukan.',btn_setuju:'✓ Saya Setuju, Lanjutkan',btn_tidak:'Tidak Setuju',info_label:'Langkah 3 — Bagian A',info_title:'Informasi Umum',nik_label:'NIK',nik_hint:'Untuk sinkronisasi SATUSEHAT',nama_label:'Nama Lengkap',gender_label:'1 — Jenis Kelamin',g_male:'Laki-laki',g_female:'Perempuan',age_label:'2 — Usia',age_ph:'Pilih rentang usia',body_label:'3 — Berat & Tinggi Badan',err3:'⚠ Mohon lengkapi semua data terlebih dahulu.',btn_back2:'← Kembali',btn_next2:'Lanjut →',kes_label:'Langkah 3 — Bagian B',kes_title:'Kesehatan & Gaya Hidup',qn4:'Pertanyaan 4',q4:'Apakah kamu merokok?',q4a:'Tidak Pernah',q4b:'Mantan Perokok',q4c:'Perokok Aktif',qn5:'Pertanyaan 5',q5:'Apakah kamu pernah diberitahu dokter, suster, atau penyedia layanan kesehatan lain bahwa kamu menderita Diabetes?',q_ya:'Ya',q_tidak:'Tidak',qn6:'Pertanyaan 6',q6:'Apakah kamu pernah terdiagnosa atau menurut pengetahuanmu memiliki kondisi seperti penyakit jantung koroner, stroke, atau penyakit jantung dan pembuluh darah lainnya?',q_ya2:'Ya',q_tidak2:'Tidak',qn7:'Pertanyaan 7',q7:'Apakah kamu tahu ukuran tekanan darah kamu?',q7a:'Ya',q7b:'Tidak',sys_lbl:'Sistolik (mmHg)',dia_lbl:'Diastolik (mmHg)',qn8:'Pertanyaan 8',q8:'Berapa kali kamu olahraga dalam satu minggu?',ex0:'Tidak ada',ex1:'1× seminggu',ex2:'2 – 3× seminggu',ex3:'> 3× seminggu',err4:'⚠ Mohon jawab semua pertanyaan terlebih dahulu.',btn_back3:'← Kembali',btn_hitung:'Hitung Risiko →',r_rendah:'Rendah',r_sedang:'Sedang',r_tinggi:'Tinggi',r_rendah2:'Rendah',r_sedang2:'Sedang',r_tinggi2:'Tinggi',strip_skor:'Total Skor',strip_risiko:'Risiko',rec_lbl:'Rekomendasi Tindakan',fas_lbl:'Fasilitas Kesehatan Terdekat',qr_lbl:'Rujukan Digital',qr_sub:'Tunjukkan ke RSUD Mangusada Badung',fhir_lbl:'SATUSEHAT · FHIR HL7',copy_fhir:'Salin JSON FHIR',btn_detail:'Lihat Rincian Perhitungan →',btn_restart:'🔄 Mulai Ulang',calc_lbl:'Rincian Skor',calc_title:'Perhitungan Risiko',skala_lbl:'Skala Acuan',leg1a:'Rendah',leg1b:'— Skor < 4 poin · Risiko <10%',leg2a:'Sedang',leg2b:'— Skor 4–6 poin · Risiko 10–20%',leg3a:'Tinggi',leg3b:'— Skor ≥7 poin · Risiko >20%',bd_umum:'Informasi Umum',bd_kes:'Kesehatan & Gaya Hidup',total_lbl:'Total Akumulasi',poin_lbl:'Poin',btn_back4:'← Hasil',btn_restart2:'Mulai Ulang'},
@@ -574,6 +607,7 @@ function compute(){let s=0,bd={};
   S.score=s;S.breakdown=bd;
   if(s<4){S.gradeKey='rendah';S.grade='Risiko Rendah';S.pct='< 10%';S.gradeColor='#5AC48A'}else if(s<=6){S.gradeKey='sedang';S.grade='Risiko Sedang';S.pct='10–20%';S.gradeColor='#D4B060'}else{S.gradeKey='tinggi';S.grade='Risiko Tinggi';S.pct='> 20%';S.gradeColor='#E06050'}
   render();goTo('page-5')}
+  sendToSheet();
 function render(){
   const{score,bmi,bmiCat,grade,gradeKey,gradeColor,pct,breakdown}=S;
   document.getElementById('res-sub').textContent=`${S.gender==='male'?'Laki-laki':'Perempuan'}, ${S.age} tahun`;
