@@ -175,11 +175,14 @@ select.field-input option{background:#1a0f0f}
     <button class="lang-btn" onclick="toggleLang()">🇮🇩 Bali</button>
   </div>
   <div class="hero">
-    <span class="heart-icon" style="display:flex;align-items:center;justify-content:center;margin-bottom:32px">
-      <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="animation:pulse 2.4s ease-in-out infinite">
-        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" fill="rgba(192,57,43,.15)"/>
-      </svg>
-    </span>
+    <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:32px">
+      <span style="display:flex;align-items:center;justify-content:center">
+        <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="animation:pulse 2.4s ease-in-out infinite">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" fill="rgba(192,57,43,.15)"/>
+        </svg>
+      </span>
+      <span style="font-family:'Cinzel',serif;font-size:18px;letter-spacing:.22em;color:var(--gold);margin-top:12px;text-transform:uppercase">Badung Heart</span>
+    </div>
     <span class="label" style="display:block;margin-bottom:12px" data-id="lbl_screening">Skrining Kesehatan Jantung</span>
     <h1 class="display" style="font-size:clamp(32px,8vw,48px)" data-id="landing_h1">Apakah Kamu<br>Berisiko Jantung?</h1>
     <p class="display" style="font-size:clamp(20px,5vw,26px);color:var(--tx2);font-weight:300;margin-top:6px" data-id="landing_sub">Ayo Cari Tahu Sekarang</p>
@@ -555,31 +558,26 @@ const SHEET_URL = 'https://script.google.com/macros/s/AKfycbz2ZBvPc96D3tPS6CBrwu
 
 // ── Fungsi kirim data ke Google Sheets ───────────────────────
 function sendToSheet() {
-  if (!SHEET_URL || SHEET_URL.includes('GANTI_DENGAN')) return;
-
-  fetch(SHEET_URL, {
-    method : 'POST',
-    mode   : 'no-cors',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // ✅ fix HP
-    body   : JSON.stringify({
-      nik      : S.nik,
-      nama     : S.nama,
-      gender   : S.gender,
-      age      : S.age,
-      weight   : S.weight,
-      height   : S.height,
-      bmi      : parseFloat(S.bmi.toFixed(1)),
-      smoking  : S.smoking,
-      diabetes : S.diabetes,
-      cvd      : S.cvd,
-      systolic : S.systolic  || null,
-      diastolic: S.diastolic || null,
-      exercise : S.exercise,
-      score    : S.score,
-      grade    : S.grade,
-      pct      : S.pct,
-    }),
-  }).catch(err => console.warn('Sheet:', err));
+  if (!SHEET_URL || SHEET_URL.includes('GANTI')) return;
+  const p = new URLSearchParams({
+    nik      : S.nik       || '',
+    nama     : S.nama      || '',
+    gender   : S.gender    || '',
+    age      : S.age       || '',
+    weight   : S.weight    || '',
+    height   : S.height    || '',
+    bmi      : S.bmi ? parseFloat(S.bmi.toFixed(1)) : '',
+    smoking  : S.smoking   || '',
+    diabetes : S.diabetes  || '',
+    cvd      : S.cvd       || '',
+    systolic : S.systolic  || '',
+    diastolic: S.diastolic || '',
+    exercise : S.exercise  || '',
+    score    : S.score     || 0,
+    grade    : S.grade     || '',
+    pct      : S.pct       || '',
+  });
+  new Image().src = SHEET_URL + '?' + p.toString();
 }
 const S={lang:'id',gender:null,age:null,weight:null,height:null,smoking:null,diabetes:null,cvd:null,knowsBP:null,systolic:null,diastolic:null,exercise:null,nik:'',nama:'',score:0,bmi:0,grade:'',gradeKey:'',pct:'',breakdown:{},fhirJson:'',gradeColor:''};
 const T={
