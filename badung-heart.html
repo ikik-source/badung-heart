@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Badung Heart – Skrining Risiko Jantung</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* ── Background: sesuai brief merah tua (bukan hitam) ── */
+  --bg:#1C0606;--surface:#2A0A0A;--raise:#360E0E;
+  --line:rgba(255,255,255,.08);--line2:rgba(188,130,60,.22);
+  --red:#C0392B;--red-lt:#E04535;--gold:#C9A84C;--gold-lt:#DDB96A;
+  --tx:#F0E8D8;--tx2:rgba(240,232,216,.5);--tx3:rgba(240,232,216,.28);
+  --green:#3A8A58;--yellow:#B8922A;--r:12px;--r2:8px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',system-ui,sans-serif;font-size:15px;line-height:1.6;background:var(--bg);color:var(--tx);min-height:100vh;overflow-x:hidden}
+/* landing hero bg */
+#page-1{background:radial-gradient(ellipse 80% 60% at 50% 0%, #5C0F0F 0%, #1C0606 65%);}
+.display{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;line-height:1.1;letter-spacing:-.01em}
+.serif{font-family:'Cormorant Garamond',Georgia,serif}
+.label{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx2)}
+.caption{font-size:12px;color:var(--tx2);line-height:1.5}
+.page{display:none;min-height:100dvh;animation:up .3s ease}
+.page.active{display:flex;flex-direction:column}
+@keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.topbar{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);flex-shrink:0}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-dot{width:28px;height:28px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:14px}
+.brand-name{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.08em}
+.progress-wrap{padding:0 20px;flex-shrink:0}
+.progress-track{height:2px;background:var(--line);border-radius:1px;margin:16px 0 10px}
+.progress-fill{height:100%;background:var(--red);border-radius:1px;transition:width .4s ease}
+.step-labels{display:flex;justify-content:space-between;margin-bottom:2px}
+.step-lbl{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.08em;color:var(--tx3);transition:color .3s}
+.step-lbl.active{color:var(--gold)}.step-lbl.done{color:var(--tx2)}
+.scroll{flex:1;overflow-y:auto;padding:24px 20px 40px}
+.inner{max-width:480px;margin:0 auto}
+.card{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.div{height:1px;background:var(--line);margin:24px 0}
+.div-label{position:relative;text-align:center;margin:24px 0}
+.div-label::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:var(--line)}
+.div-label span{position:relative;background:var(--bg);padding:0 12px;font-family:'Cinzel',serif;font-size:9px;letter-spacing:.12em;color:var(--tx3)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 24px;border-radius:var(--r2);border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;letter-spacing:.01em;transition:all .2s;text-decoration:none}
+.btn-primary{background:var(--red);color:#fff}.btn-primary:hover{background:var(--red-lt)}
+.btn-ghost{background:transparent;color:var(--tx2);border:1px solid var(--line)}.btn-ghost:hover{background:var(--surface);color:var(--tx)}
+.btn-confirm{background:var(--green);color:#fff}.btn-confirm:hover{background:#45a86b}
+.btn-full{width:100%}
+.nav-footer{padding:16px 20px;border-top:1px solid var(--line);display:flex;gap:10px;flex-shrink:0;background:var(--bg)}
+.nav-footer .btn{flex:1}
+.field{margin-bottom:20px}
+.field-label{display:block;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.12em;color:var(--gold);margin-bottom:8px;text-transform:uppercase}
+.field-input{width:100%;padding:13px 16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r2);color:var(--tx);font-family:'DM Sans',sans-serif;font-size:15px;outline:none;transition:border-color .2s,background .2s;-webkit-appearance:none}
+.field-input:focus{border-color:var(--gold);background:var(--raise)}
+.field-input::placeholder{color:var(--tx3)}
+select.field-input option{background:#1a0f0f}
+.field-hint{font-size:11px;color:var(--tx3);margin-top:5px}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{padding:10px 18px;border-radius:6px;border:1px solid var(--line);background:transparent;color:var(--tx2);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all .18s}
+.pill:hover{border-color:var(--line2);color:var(--tx)}
+.pill.on{background:rgba(176,50,40,.15);border-color:rgba(176,50,40,.5);color:var(--tx)}
+.pills.col{flex-direction:column}.pills.col .pill{text-align:left}
+.q-block{padding:20px 0;border-bottom:1px solid var(--line)}
+.q-block:last-child{border-bottom:none}
+.q-num{color:var(--red);font-family:'Cinzel',serif;font-size:11px;letter-spacing:.08em;margin-bottom:6px;display:block}
+.q-text{font-size:15px;color:var(--tx);margin-bottom:14px;line-height:1.5}
+.lang-btn{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;background:var(--raise);border:1px solid var(--line);border-radius:6px;color:var(--tx2);padding:6px 12px;cursor:pointer;transition:all .2s}
+.lang-btn:hover{border-color:var(--line2);color:var(--tx)}
+.meter-wrap{padding:4px 0 14px}
+.meter-track{height:6px;border-radius:3px;background:linear-gradient(90deg,var(--green) 0%,var(--yellow) 50%,var(--red) 100%);position:relative}
+.meter-thumb{width:14px;height:14px;border-radius:50%;background:var(--tx);border:2px solid var(--bg);position:absolute;top:50%;transform:translate(-50%,-50%);transition:left 1s cubic-bezier(.34,1.56,.64,1);box-shadow:0 0 0 3px rgba(255,255,255,.1)}
+.meter-labels{display:flex;justify-content:space-between;margin-top:8px}
+.score-big{font-family:'Cormorant Garamond',serif;font-size:72px;font-weight:700;line-height:1;letter-spacing:-.02em}
+.grade-pill{display:inline-block;padding:4px 14px;border-radius:4px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;margin-top:8px}
+.grade-low{background:rgba(58,138,88,.15);color:#5AC48A;border:1px solid rgba(58,138,88,.3)}
+.grade-mid{background:rgba(192,148,48,.15);color:#D4B060;border:1px solid rgba(192,148,48,.3)}
+.grade-high{background:rgba(184,50,40,.15);color:#E06050;border:1px solid rgba(184,50,40,.3)}
+.score-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}
+.score-row:last-child{border:none}
+.score-pt{font-family:'Cinzel',serif;font-size:12px;min-width:48px;text-align:right}
+.score-pt.pos{color:#E06050}.score-pt.neg{color:#5AC48A}.score-pt.zero{color:var(--tx3)}
+.hospital{display:flex;gap:14px;align-items:flex-start;padding:16px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface);cursor:pointer;transition:all .2s;margin-bottom:8px}
+.hospital:hover{border-color:var(--line2);background:var(--raise)}
+.hospital-icon{width:40px;height:40px;border-radius:8px;flex-shrink:0;background:var(--raise);display:flex;align-items:center;justify-content:center;font-size:18px}
+.hospital.urgent{border-color:rgba(184,50,40,.35);background:rgba(184,50,40,.06)}
+.hospital.urgent .hospital-icon{background:rgba(184,50,40,.2)}
+.fhir-box{background:#040807;border:1px solid rgba(58,160,100,.15);border-radius:var(--r);padding:16px;font-family:ui-monospace,monospace;font-size:11px;color:rgba(180,240,200,.75);overflow-y:auto;max-height:200px;line-height:1.7}
+.fhir-k{color:#6DBBF0}.fhir-s{color:#F0C070}.fhir-n{color:#90E060}
+.qr-outer{display:inline-flex;flex-direction:column;align-items:center;gap:10px}
+.qr-frame{background:#fff;padding:12px;border-radius:8px}
+.qr-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.12em;color:var(--tx3)}
+.alert-err{padding:12px 16px;border-radius:var(--r2);font-size:13px;line-height:1.5;margin-bottom:16px;background:rgba(184,50,40,.1);border:1px solid rgba(184,50,40,.3);color:#E06050;display:none}
+.check-list{display:flex;flex-direction:column;gap:14px}
+.check-item{display:flex;gap:12px;align-items:flex-start}
+.check-num{min-width:24px;height:24px;border-radius:50%;background:rgba(176,50,40,.15);border:1px solid rgba(176,50,40,.3);display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:11px;color:var(--red-lt);margin-top:1px;flex-shrink:0}
+.flow{display:flex;flex-direction:column}
+.flow-item{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line)}
+.flow-item:last-child{border:none}
+.flow-num{min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:11px;flex-shrink:0;margin-top:1px}
+.flow-a{background:var(--red);color:#fff}
+.flow-i{background:var(--raise);border:1px solid var(--line);color:var(--tx3)}
+.section-head{margin-bottom:24px}
+.section-head .label{display:block;margin-bottom:8px}
+.section-head h2{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;line-height:1.15}
+.result-hero{text-align:center;padding:28px 0 24px}
+.strip{display:flex;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:20px}
+.strip-item{flex:1;padding:14px 10px;text-align:center;border-right:1px solid var(--line)}
+.strip-item:last-child{border:none}
+.strip-val{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;line-height:1}
+.strip-lbl{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.08em;color:var(--tx3);margin-top:4px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hero{flex:1;display:flex;flex-direction:column;justify-content:center;padding:48px 24px;text-align:center;max-width:480px;margin:0 auto;width:100%}
+.heart-icon{font-size:52px;margin-bottom:32px;display:block;animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}45%{transform:scale(1.06)}65%{transform:scale(.97)}}
+.feature-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:22px 0 34px}
+.feature-tag{padding:5px 14px;border-radius:4px;border:1px solid var(--line2);font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;color:var(--gold)}
+.mt-2{margin-top:8px}.mt-3{margin-top:12px}.mt-4{margin-top:16px}.mt-6{margin-top:24px}
+.mb-2{margin-bottom:8px}.mb-4{margin-bottom:16px}
+.flex{display:flex}.gap-2{gap:8px}.items-center{align-items:center}
+#bmi-preview{font-size:12px;color:var(--gold);margin-top:6px;font-family:'Cinzel',serif;letter-spacing:.06em;min-height:18px}
+</style>
+</head>
+<body>
+
+<!-- ══ INLINE SVG ICON SYSTEM ══════════════════════════════
+     Gunakan konstanta IC.* untuk merender icon di JS.
+     Untuk mengganti LOGO: cari class="brand-dot" dan ganti konten
+     SVG di dalam, atau ganti seluruh elemen dengan tag <img> seperti:
+     <img src="logo-badung-heart.png" alt="Logo" style="width:28px;height:28px">
+═══════════════════════════════════════════════════════════ -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="ic-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+  </symbol>
+  <symbol id="ic-hospital" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+    <line x1="12" y1="8" x2="12" y2="12"/><line x1="10" y1="10" x2="14" y2="10"/>
+  </symbol>
+  <symbol id="ic-clinic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="10" y1="10" x2="14" y2="10"/>
+  </symbol>
+  <symbol id="ic-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+  </symbol>
+  <symbol id="ic-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+  </symbol>
+  <symbol id="ic-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.06 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16.92z"/>
+  </symbol>
+  <symbol id="ic-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+  </symbol>
+  <symbol id="ic-arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+  </symbol>
+  <symbol id="ic-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/>
+  </symbol>
+  <symbol id="ic-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+  </symbol>
+  <symbol id="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="20 6 9 17 4 12"/>
+  </symbol>
+  <symbol id="ic-emergency" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    <line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+  </symbol>
+</svg>
+<section id="page-1" class="page active">
+  <div class="topbar" style="justify-content:flex-end;border:none;padding:20px 20px 0">
+    <button class="lang-btn" onclick="toggleLang()">🇮🇩 Bali</button>
+  </div>
+  <div class="hero">
+    <span class="heart-icon" style="display:flex;align-items:center;justify-content:center;margin-bottom:32px">
+      <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="animation:pulse 2.4s ease-in-out infinite">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" fill="rgba(192,57,43,.15)"/>
+      </svg>
+    </span>
+    <span class="label" style="display:block;margin-bottom:12px" data-id="lbl_screening">Skrining Kesehatan Jantung</span>
+    <h1 class="display" style="font-size:clamp(32px,8vw,48px)" data-id="landing_h1">Apakah Kamu<br>Berisiko Jantung?</h1>
+    <p class="display" style="font-size:clamp(20px,5vw,26px);color:var(--tx2);font-weight:300;margin-top:6px" data-id="landing_sub">Ayo Cari Tahu Sekarang</p>
+    <div class="feature-row">
+      <span class="feature-tag" data-id="f1">Skrining Risiko</span>
+      <span class="feature-tag" data-id="f2">Rekomendasi Faskes</span>
+      <span class="feature-tag" data-id="f3">SATUSEHAT FHIR</span>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="goTo('page-2')" style="padding:15px;font-size:15px" data-id="cek_btn">Mulai Skrining</button>
+    <p class="caption mt-4" style="text-align:center" data-id="landing_footer">FKIK Universitas Warmadewa · Kabupaten Badung</p>
+  </div>
+</section>
+
+<!-- ═══ PAGE 2: PENGENALAN ═══ -->
+<section id="page-2" class="page">
+  <div class="topbar">
+    <div class="brand">
+      <!-- LOGO: Ganti konten di dalam .brand-dot dengan <img src="logo.png"> atau SVG logo asli -->
+      <div class="brand-dot"><svg width="16" height="16" style="color:#fff"><use href="#ic-heart"/></svg></div>
+      <span class="brand-name">Badung Heart</span>
+    </div>
+    <button class="lang-btn" onclick="toggleLang()">🇮🇩 Bali</button>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" style="width:20%"></div></div>
+    <div class="step-labels">
+      <span class="step-lbl active" data-id="s1">Pengenalan</span>
+      <span class="step-lbl" data-id="s2">Persetujuan</span>
+      <span class="step-lbl" data-id="s3">Kuisioner</span>
+      <span class="step-lbl" data-id="s4">Hasil</span>
+      <span class="step-lbl" data-id="s5">Rujukan</span>
+    </div>
+  </div>
+  <div class="scroll">
+    <div class="inner">
+      <div class="section-head">
+        <span class="label" data-id="pen_label">Langkah 1 dari 5</span>
+        <h2 data-id="pen_title">Selamat Datang</h2>
+        <p class="caption mt-2" data-id="pen_sub">Website Skrining Jantung Kabupaten Badung</p>
+      </div>
+      <div class="card" style="background:rgba(176,50,40,.08);border-color:rgba(176,50,40,.2)">
+        <span class="label mb-2" style="display:block;color:var(--red-lt)" data-id="pen_about_lbl">Badung Heart</span>
+        <p style="font-size:14px;line-height:1.7" data-id="pen_about">Merupakan website <strong style="color:var(--tx)">skrining jantung</strong> yang bertujuan mengidentifikasi risiko penyakit jantung sejak dini serta memfasilitasi rujukan cepat ke fasilitas pelayanan kesehatan terdekat di Kabupaten Badung.</p>
+      </div>
+      <div class="div-label mt-6"><span data-id="alur_label">Alur Pengisian</span></div>
+      <div class="flow">
+        <div class="flow-item"><div class="flow-num flow-a">1</div><div><p style="font-size:14px;font-weight:500" data-id="flow1a">Pengenalan</p><p class="caption" data-id="flow1b">Website Badung Heart</p></div></div>
+        <div class="flow-item"><div class="flow-num flow-i">2</div><div><p style="font-size:14px;font-weight:500" data-id="flow2a">Persetujuan</p><p class="caption" data-id="flow2b">Pengguna Website Badung Heart</p></div></div>
+        <div class="flow-item"><div class="flow-num flow-i">3</div><div><p style="font-size:14px;font-weight:500" data-id="flow3a">Pengisian Kuisioner</p><p class="caption" data-id="flow3b">Data kesehatan &amp; gaya hidup</p></div></div>
+        <div class="flow-item"><div class="flow-num flow-i">4</div><div><p style="font-size:14px;font-weight:500" data-id="flow4a">Hasil</p><p class="caption" data-id="flow4b">Skor risiko jantung Anda</p></div></div>
+        <div class="flow-item"><div class="flow-num flow-i">5</div><div><p style="font-size:14px;font-weight:500" data-id="flow5a">Rekomendasi Rujukan</p><p class="caption" data-id="flow5b">Fasilitas kesehatan terdekat</p></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="nav-footer">
+    <button class="btn btn-ghost" onclick="goTo('page-1')" data-id="btn_back"><svg width="16" height="16" style="flex-shrink:0"><use href="#ic-arrow-left"/></svg> <span data-id="btn_back">Kembali</span></button>
+    <button class="btn btn-primary" onclick="goTo('page-2b')" data-id="btn_next"><span data-id="btn_next">Lanjut</span> <svg width="16" height="16" style="flex-shrink:0"><use href="#ic-arrow-right"/></svg></button>
+  </div>
+</section>
+
+<!-- ═══ PAGE 2b: PERSETUJUAN ═══ -->
+<section id="page-2b" class="page">
+  <div class="topbar">
+    <div class="brand"><div class="brand-dot"><svg width="16" height="16" style="color:#fff"><use href="#ic-heart"/></svg></div><span class="brand-name">Badung Heart</span></div>
+    <button class="lang-btn" onclick="toggleLang()">🇮🇩 Bali</button>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" style="width:40%"></div></div>
+    <div class="step-labels">
+      <span class="step-lbl done" data-id="s1b">Pengenalan</span>
+      <span class="step-lbl active" data-id="s2b">Persetujuan</span>
+      <span class="step-lbl" data-id="s3b">Kuisioner</span>
+      <span class="step-lbl" data-id="s4b">Hasil</span>
+      <span class="step-lbl" data-id="s5b">Rujukan</span>
+    </div>
+  </div>
+  <div class="scroll">
+    <div class="inner">
+      <div class="section-head">
+        <span class="label" data-id="con_label">Langkah 2 dari 5</span>
+        <h2 data-id="con_title">Persetujuan</h2>
+        <p class="caption mt-2" data-id="con_sub">Baca dan pahami sebelum melanjutkan</p>
+      </div>
+      <div class="check-list">
+        <div class="check-item"><div class="check-num">1</div><p style="font-size:14px;line-height:1.6" data-id="c1">Saya telah membaca dan memahami informasi terkait tujuan, manfaat, serta keterbatasan dari skrining jantung yang disediakan pada website ini.</p></div>
+        <div class="check-item"><div class="check-num">2</div><p style="font-size:14px;line-height:1.6" data-id="c2">Saya memahami bahwa hasil skrining ini bukan merupakan diagnosis medis dan tidak menggantikan konsultasi langsung dengan tenaga kesehatan profesional.</p></div>
+        <div class="check-item"><div class="check-num">3</div><p style="font-size:14px;line-height:1.6" data-id="c3">Saya bersedia memberikan data yang diperlukan secara jujur dan akurat untuk keperluan analisis risiko kesehatan jantung.</p></div>
+        <div class="check-item"><div class="check-num">4</div><p style="font-size:14px;line-height:1.6" data-id="c4">Saya memahami bahwa data yang saya berikan akan dijaga kerahasiaannya dan digunakan hanya untuk keperluan skrining serta pengembangan layanan.</p></div>
+        <div class="check-item"><div class="check-num">5</div><p style="font-size:14px;line-height:1.6" data-id="c5">Saya menyetujui bahwa segala keputusan terkait kesehatan tetap menjadi tanggung jawab saya, termasuk untuk melakukan pemeriksaan lanjutan apabila diperlukan.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="nav-footer" style="flex-direction:column;gap:8px">
+    <button class="btn btn-confirm btn-full" onclick="goTo('page-3')" data-id="btn_setuju"><svg width="16" height="16"><use href="#ic-check"/></svg> Saya Setuju, Lanjutkan</button>
+    <button class="btn btn-ghost btn-full" onclick="goTo('page-1')" data-id="btn_tidak">Tidak Setuju</button>
+  </div>
+</section>
+
+<!-- ═══ PAGE 3: INFO UMUM ═══ -->
+<section id="page-3" class="page">
+  <div class="topbar">
+    <div class="brand"><div class="brand-dot"><svg width="16" height="16" style="color:#fff"><use href="#ic-heart"/></svg></div><span class="brand-name">Badung Heart</span></div>
+    <button class="lang-btn" onclick="toggleLang()">🇮🇩 Bali</button>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" style="width:55%"></div></div>
+    <div class="step-labels">
+      <span class="step-lbl done" data-id="s1c">Pengenalan</span>
+      <span class="step-lbl done" data-id="s2c">Persetujuan</span>
+      <span class="step-lbl active" data-id="s3c">Kuisioner</span>
+      <span class="step-lbl" data-id="s4c">Hasil</span>
+      <span class="step-lbl" data-id="s5c">Rujukan</span>
+    </div>
+  </div>
+  <div class="scroll">
+    <div class="inner">
+      <div class="section-head">
+        <span class="label" data-id="info_label">Langkah 3 — Bagian A</span>
+        <h2 data-id="info_title">Informasi Umum</h2>
+      </div>
+      <div class="field">
+        <label class="field-label" data-id="nik_label">NIK</label>
+        <input type="text" id="nik" class="field-input" maxlength="16" inputmode="numeric" placeholder="16 digit Nomor Induk Kependudukan">
+        <p class="field-hint" data-id="nik_hint">Untuk sinkronisasi SATUSEHAT</p>
+      </div>
+      <div class="field">
+        <label class="field-label" data-id="nama_label">Nama Lengkap</label>
+        <input type="text" id="nama" class="field-input" placeholder="Sesuai KTP">
+      </div>
+      <div class="field">
+        <label class="field-label" data-id="gender_label">1 — Jenis Kelamin</label>
+        <div class="pills">
+          <button class="pill" onclick="pickPill(this,'gender','male')" data-id="g_male">Laki-laki</button>
+          <button class="pill" onclick="pickPill(this,'gender','female')" data-id="g_female">Perempuan</button>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label" data-id="age_label">2 — Usia</label>
+        <select id="age" class="field-input">
+          <option value="" data-id="age_ph">Pilih rentang usia</option>
+          <option value="20">Di bawah 25 tahun</option>
+          <option value="29">25 – 34 tahun</option>
+          <option value="37">35 – 39 tahun</option>
+          <option value="42">40 – 44 tahun</option>
+          <option value="47">45 – 49 tahun</option>
+          <option value="52">50 – 54 tahun</option>
+          <option value="57">55 – 59 tahun</option>
+          <option value="62">60 – 64 tahun</option>
+          <option value="67">65 tahun ke atas</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="field-label" data-id="body_label">3 — Berat &amp; Tinggi Badan</label>
+        <div class="grid2">
+          <input type="number" id="weight" class="field-input" placeholder="Berat (kg)" min="30" max="200" inputmode="decimal">
+          <input type="number" id="height" class="field-input" placeholder="Tinggi (cm)" min="100" max="250" inputmode="decimal">
+        </div>
+        <div id="bmi-preview"></div>
+      </div>
+      <div class="alert-err" id="err3" data-id="err3">⚠ Mohon lengkapi semua data terlebih dahulu.</div>
+    </div>
+  </div>
+  <div class="nav-footer">
+    <button class="btn btn-ghost" onclick="goTo('page-2b')" data-id="btn_back2"><svg width="16" height="16"><use href="#ic-arrow-left"/></svg> Kembali</button>
+    <button class="btn btn-primary" onclick="validatePage3()" data-id="btn_next2">Lanjut <svg width="16" height="16"><use href="#ic-arrow-right"/></svg></button>
+  </div>
+</section>
+
+<!-- ═══ PAGE 4: KUISIONER ═══ -->
+<section id="page-4" class="page">
+  <div class="topbar">
+    <div class="brand"><div class="brand-dot"><svg width="16" height="16" style="color:#fff"><use href="#ic-heart"/></svg></div><span class="brand-name">Badung Heart</span></div>
+    <button class="lang-btn" onclick="toggleLang()">🇮🇩 Bali</button>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" style="width:70%"></div></div>
+    <div class="step-labels">
+      <span class="step-lbl done" data-id="s1d">Pengenalan</span>
+      <span class="step-lbl done" data-id="s2d">Persetujuan</span>
+      <span class="step-lbl active" data-id="s3d">Kuisioner</span>
+      <span class="step-lbl" data-id="s4d">Hasil</span>
+      <span class="step-lbl" data-id="s5d">Rujukan</span>
+    </div>
+  </div>
+  <div class="scroll">
+    <div class="inner">
+      <div class="section-head">
+        <span class="label" data-id="kes_label">Langkah 3 — Bagian B</span>
+        <h2 data-id="kes_title">Kesehatan &amp; Gaya Hidup</h2>
+      </div>
+      <div class="q-block">
+        <span class="q-num" data-id="qn4">Pertanyaan 4</span>
+        <p class="q-text" data-id="q4">Apakah kamu merokok?</p>
+        <div class="pills">
+          <button class="pill" onclick="pickPill(this,'smoking','never')" data-id="q4a">Tidak Pernah</button>
+          <button class="pill" onclick="pickPill(this,'smoking','former')" data-id="q4b">Mantan Perokok</button>
+          <button class="pill" onclick="pickPill(this,'smoking','current')" data-id="q4c">Perokok Aktif</button>
+        </div>
+      </div>
+      <div class="q-block">
+        <span class="q-num" data-id="qn5">Pertanyaan 5</span>
+        <p class="q-text" data-id="q5">Apakah kamu pernah diberitahu dokter, suster, atau penyedia layanan kesehatan lain bahwa kamu menderita Diabetes?</p>
+        <div class="pills">
+          <button class="pill" onclick="pickPill(this,'diabetes','yes')" data-id="q_ya">Ya</button>
+          <button class="pill" onclick="pickPill(this,'diabetes','no')" data-id="q_tidak">Tidak</button>
+        </div>
+      </div>
+      <div class="q-block">
+        <span class="q-num" data-id="qn6">Pertanyaan 6</span>
+        <p class="q-text" data-id="q6">Apakah kamu pernah terdiagnosa atau menurut pengetahuanmu memiliki kondisi seperti penyakit jantung koroner, stroke, atau penyakit jantung dan pembuluh darah lainnya?</p>
+        <div class="pills">
+          <button class="pill" onclick="pickPill(this,'cvd','yes')" data-id="q_ya2">Ya</button>
+          <button class="pill" onclick="pickPill(this,'cvd','no')" data-id="q_tidak2">Tidak</button>
+        </div>
+      </div>
+      <div class="q-block">
+        <span class="q-num" data-id="qn7">Pertanyaan 7</span>
+        <p class="q-text" data-id="q7">Apakah kamu tahu ukuran tekanan darah kamu?</p>
+        <div class="pills" style="margin-bottom:12px">
+          <button class="pill" onclick="pickPill(this,'knowsBP','yes');showBP(true)" data-id="q7a">Ya</button>
+          <button class="pill" onclick="pickPill(this,'knowsBP','no');showBP(false)" data-id="q7b">Tidak</button>
+        </div>
+        <div id="bp-wrap" style="display:none" class="grid2">
+          <div><label class="field-label" style="font-size:9px" data-id="sys_lbl">Sistolik (mmHg)</label><input type="number" id="systolic" class="field-input" placeholder="mis. 120" min="70" max="250" inputmode="decimal"></div>
+          <div><label class="field-label" style="font-size:9px" data-id="dia_lbl">Diastolik (mmHg)</label><input type="number" id="diastolic" class="field-input" placeholder="mis. 80" min="40" max="160" inputmode="decimal"></div>
+        </div>
+      </div>
+      <div class="q-block">
+        <span class="q-num" data-id="qn8">Pertanyaan 8</span>
+        <p class="q-text" data-id="q8">Berapa kali kamu olahraga dalam satu minggu? <span class="caption">(min. 30 menit per sesi)</span></p>
+        <div class="pills col">
+          <button class="pill" onclick="pickPill(this,'exercise','none')" data-id="ex0">Tidak ada</button>
+          <button class="pill" onclick="pickPill(this,'exercise','1x')" data-id="ex1">1× seminggu</button>
+          <button class="pill" onclick="pickPill(this,'exercise','2-3x')" data-id="ex2">2 – 3× seminggu</button>
+          <button class="pill" onclick="pickPill(this,'exercise','>3x')" data-id="ex3">&gt; 3× seminggu</button>
+        </div>
+      </div>
+      <div class="alert-err" id="err4" data-id="err4">⚠ Mohon jawab semua pertanyaan terlebih dahulu.</div>
+    </div>
+  </div>
+  <div class="nav-footer">
+    <button class="btn btn-ghost" onclick="goTo('page-3')" data-id="btn_back3"><svg width="16" height="16"><use href="#ic-arrow-left"/></svg> Kembali</button>
+    <button class="btn btn-primary" onclick="validatePage4()" data-id="btn_hitung">Hitung Risiko <svg width="16" height="16"><use href="#ic-heart"/></svg></button>
+  </div>
+</section>
+
+<!-- ═══ PAGE 5: HASIL ═══ -->
+<section id="page-5" class="page">
+  <div class="topbar">
+    <div class="brand"><div class="brand-dot"><svg width="16" height="16" style="color:#fff"><use href="#ic-heart"/></svg></div><span class="brand-name">Badung Heart</span></div>
+    <button class="lang-btn" onclick="toggleLang()">🇮🇩 Bali</button>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" style="width:88%"></div></div>
+    <div class="step-labels">
+      <span class="step-lbl done" data-id="s1e">Pengenalan</span>
+      <span class="step-lbl done" data-id="s2e">Persetujuan</span>
+      <span class="step-lbl done" data-id="s3e">Kuisioner</span>
+      <span class="step-lbl active" data-id="s4e">Hasil</span>
+      <span class="step-lbl" data-id="s5e">Rujukan</span>
+    </div>
+  </div>
+  <div class="scroll">
+    <div class="inner">
+      <div class="result-hero">
+        <span class="label" style="display:block;margin-bottom:8px" id="res-sub">—</span>
+        <div class="score-big" id="res-pct">—</div>
+        <div id="res-grade-pill" style="margin-top:10px"></div>
+        <div class="meter-wrap mt-6">
+          <div class="meter-track"><div class="meter-thumb" id="meter-thumb" style="left:10%"></div></div>
+          <div class="meter-labels">
+            <span class="caption" data-id="r_rendah">Rendah</span>
+            <span class="caption" data-id="r_sedang">Sedang</span>
+            <span class="caption" data-id="r_tinggi">Tinggi</span>
+          </div>
+        </div>
+        <p class="caption mt-4" id="res-desc" style="max-width:300px;margin:14px auto 0"></p>
+      </div>
+      <div class="strip">
+        <div class="strip-item"><div class="strip-val" id="strip-score">—</div><div class="strip-lbl" data-id="strip_skor">Total Skor</div></div>
+        <div class="strip-item"><div class="strip-val" id="strip-bmi">—</div><div class="strip-lbl">BMI</div></div>
+        <div class="strip-item"><div class="strip-val" id="strip-pct" style="font-size:18px;display:flex;align-items:center;justify-content:center;min-height:26px">—</div><div class="strip-lbl" data-id="strip_risiko">Risiko</div></div>
+      </div>
+      <button class="btn btn-ghost btn-full mb-4" onclick="goTo('page-5b')" data-id="btn_detail">Lihat Rincian Perhitungan <svg width="14" height="14"><use href="#ic-arrow-right"/></svg></button>
+      <div class="div"></div>
+      <span class="label" style="display:block;margin-bottom:10px" data-id="rec_lbl">Rekomendasi Tindakan</span>
+      <div id="rec-box" class="card mb-4" style="font-size:14px;line-height:1.7"></div>
+      <span class="label" style="display:block;margin-bottom:10px" data-id="fas_lbl">Fasilitas Kesehatan Terdekat</span>
+      <div id="hospital-list"></div>
+      <div id="qr-section" style="display:none;text-align:center;margin:20px 0">
+        <div class="div-label"><span data-id="qr_lbl">Rujukan Digital</span></div>
+        <div class="qr-outer">
+          <div class="qr-frame"><div id="qr-svg"></div></div>
+          <p class="qr-label" id="qr-id-txt"></p>
+          <p class="caption" data-id="qr_sub">Tunjukkan ke RSUD Mangusada Badung</p>
+        </div>
+      </div>
+      <div class="div"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <span class="label" data-id="fhir_lbl">SATUSEHAT · FHIR HL7</span>
+        <span style="font-size:10px;font-family:monospace;color:#3AB87A;background:rgba(58,184,122,.1);padding:3px 10px;border-radius:4px">BADUNG-H09</span>
+      </div>
+      <div class="fhir-box" id="fhir-out">// Generating...</div>
+      <button class="btn btn-ghost btn-full mt-3" onclick="copyFHIR()" id="fhir-copy-btn" data-id="copy_fhir"><svg width="15" height="15"><use href="#ic-copy"/></svg> Salin JSON FHIR</button>
+      <div class="div"></div>
+      <button class="btn btn-ghost btn-full" onclick="goTo('page-1')" data-id="btn_restart"><svg width="15" height="15"><use href="#ic-refresh"/></svg> Mulai Ulang</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PAGE 5b: PERHITUNGAN ═══ -->
+<section id="page-5b" class="page">
+  <div class="topbar">
+    <div class="brand"><div class="brand-dot"><svg width="16" height="16" style="color:#fff"><use href="#ic-heart"/></svg></div><span class="brand-name">Badung Heart</span></div>
+    <button class="lang-btn" onclick="toggleLang()">🇮🇩 Bali</button>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" style="width:100%"></div></div>
+    <div class="step-labels">
+      <span class="step-lbl done">Pengenalan</span>
+      <span class="step-lbl done">Persetujuan</span>
+      <span class="step-lbl done">Kuisioner</span>
+      <span class="step-lbl done">Hasil</span>
+      <span class="step-lbl active" data-id="s5f">Rujukan</span>
+    </div>
+  </div>
+  <div class="scroll">
+    <div class="inner">
+      <div class="section-head">
+        <span class="label" data-id="calc_lbl">Rincian Skor</span>
+        <h2 data-id="calc_title">Perhitungan Risiko</h2>
+      </div>
+      <div class="card" style="text-align:center;margin-bottom:20px">
+        <div class="meter-wrap" style="padding-bottom:8px">
+          <div class="meter-track"><div class="meter-thumb" id="meter-thumb2" style="left:10%"></div></div>
+          <div class="meter-labels">
+            <span class="caption" data-id="r_rendah2">Rendah</span>
+            <span class="caption" data-id="r_sedang2">Sedang</span>
+            <span class="caption" data-id="r_tinggi2">Tinggi</span>
+          </div>
+        </div>
+        <div id="calc-grade" style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;margin-top:8px"></div>
+      </div>
+      <span class="label" style="display:block;margin-bottom:10px" data-id="skala_lbl">Skala Acuan</span>
+      <div class="card" style="margin-bottom:20px">
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="flex gap-2 items-center"><div style="width:6px;height:6px;border-radius:50%;background:#5AC48A;flex-shrink:0"></div><p style="font-size:13px"><span style="color:#5AC48A;font-weight:500" data-id="leg1a">Rendah</span> <span class="caption" data-id="leg1b">— Skor &lt; 4 poin · Risiko &lt;10%</span></p></div>
+          <div class="flex gap-2 items-center"><div style="width:6px;height:6px;border-radius:50%;background:var(--yellow);flex-shrink:0"></div><p style="font-size:13px"><span style="color:var(--gold-lt);font-weight:500" data-id="leg2a">Sedang</span> <span class="caption" data-id="leg2b">— Skor 4–6 poin · Risiko 10–20%</span></p></div>
+          <div class="flex gap-2 items-center"><div style="width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0"></div><p style="font-size:13px"><span style="color:#E06050;font-weight:500" data-id="leg3a">Tinggi</span> <span class="caption" data-id="leg3b">— Skor ≥7 poin · Risiko &gt;20%</span></p></div>
+        </div>
+      </div>
+      <span class="label" style="display:block;margin-bottom:10px" data-id="bd_umum">Informasi Umum</span>
+      <div class="card" style="margin-bottom:14px" id="bd-umum"></div>
+      <span class="label" style="display:block;margin-bottom:10px" data-id="bd_kes">Kesehatan &amp; Gaya Hidup</span>
+      <div class="card" id="bd-kes"></div>
+      <div style="text-align:center;padding:28px 0">
+        <span class="label" style="display:block;margin-bottom:8px" data-id="total_lbl">Total Akumulasi</span>
+        <div class="score-big" id="calc-total">—</div>
+        <p class="caption mt-2" data-id="poin_lbl">Poin</p>
+      </div>
+    </div>
+  </div>
+  <div class="nav-footer">
+    <button class="btn btn-ghost" onclick="goTo('page-5')" data-id="btn_back4"><svg width="16" height="16"><use href="#ic-arrow-left"/></svg> Hasil</button>
+    <button class="btn btn-primary" onclick="goTo('page-1')" data-id="btn_restart2"><svg width="15" height="15"><use href="#ic-refresh"/></svg> Mulai Ulang</button>
+  </div>
+</section>
+
+<script>
+const S={lang:'id',gender:null,age:null,weight:null,height:null,smoking:null,diabetes:null,cvd:null,knowsBP:null,systolic:null,diastolic:null,exercise:null,nik:'',nama:'',score:0,bmi:0,grade:'',gradeKey:'',pct:'',breakdown:{},fhirJson:'',gradeColor:''};
+const T={
+  id:{lbl_screening:'Skrining Kesehatan Jantung',landing_h1:'Apakah Kamu<br>Berisiko Jantung?',landing_sub:'Ayo Cari Tahu Sekarang',f1:'Skrining Risiko',f2:'Rekomendasi Faskes',f3:'SATUSEHAT FHIR',cek_btn:'Mulai Skrining',landing_footer:'FKIK Universitas Warmadewa · Kabupaten Badung',s1:'Pengenalan',s2:'Persetujuan',s3:'Kuisioner',s4:'Hasil',s5:'Rujukan',s1b:'Pengenalan',s2b:'Persetujuan',s3b:'Kuisioner',s4b:'Hasil',s5b:'Rujukan',s1c:'Pengenalan',s2c:'Persetujuan',s3c:'Kuisioner',s4c:'Hasil',s5c:'Rujukan',s1d:'Pengenalan',s2d:'Persetujuan',s3d:'Kuisioner',s4d:'Hasil',s5d:'Rujukan',s1e:'Pengenalan',s2e:'Persetujuan',s3e:'Kuisioner',s4e:'Hasil',s5e:'Rujukan',s5f:'Rujukan',pen_label:'Langkah 1 dari 5',pen_title:'Selamat Datang',pen_sub:'Website Skrining Jantung Kabupaten Badung',pen_about_lbl:'Badung Heart',pen_about:'Merupakan website <strong style="color:var(--tx)">skrining jantung</strong> yang bertujuan mengidentifikasi risiko penyakit jantung sejak dini serta memfasilitasi rujukan cepat ke fasilitas pelayanan kesehatan terdekat di Kabupaten Badung.',alur_label:'Alur Pengisian',flow1a:'Pengenalan',flow1b:'Website Badung Heart',flow2a:'Persetujuan',flow2b:'Pengguna Website Badung Heart',flow3a:'Pengisian Kuisioner',flow3b:'Data kesehatan & gaya hidup',flow4a:'Hasil',flow4b:'Skor risiko jantung Anda',flow5a:'Rekomendasi Rujukan',flow5b:'Fasilitas kesehatan terdekat',btn_back:'← Kembali',btn_next:'Lanjut →',con_label:'Langkah 2 dari 5',con_title:'Persetujuan',con_sub:'Baca dan pahami sebelum melanjutkan',c1:'Saya telah membaca dan memahami informasi terkait tujuan, manfaat, serta keterbatasan dari skrining jantung yang disediakan pada website ini.',c2:'Saya memahami bahwa hasil skrining ini bukan merupakan diagnosis medis dan tidak menggantikan konsultasi langsung dengan tenaga kesehatan profesional.',c3:'Saya bersedia memberikan data yang diperlukan secara jujur dan akurat untuk keperluan analisis risiko kesehatan jantung.',c4:'Saya memahami bahwa data yang saya berikan akan dijaga kerahasiaannya dan digunakan hanya untuk keperluan skrining serta pengembangan layanan.',c5:'Saya menyetujui bahwa segala keputusan terkait kesehatan tetap menjadi tanggung jawab saya, termasuk untuk melakukan pemeriksaan lanjutan apabila diperlukan.',btn_setuju:'✓ Saya Setuju, Lanjutkan',btn_tidak:'Tidak Setuju',info_label:'Langkah 3 — Bagian A',info_title:'Informasi Umum',nik_label:'NIK',nik_hint:'Untuk sinkronisasi SATUSEHAT',nama_label:'Nama Lengkap',gender_label:'1 — Jenis Kelamin',g_male:'Laki-laki',g_female:'Perempuan',age_label:'2 — Usia',age_ph:'Pilih rentang usia',body_label:'3 — Berat & Tinggi Badan',err3:'⚠ Mohon lengkapi semua data terlebih dahulu.',btn_back2:'← Kembali',btn_next2:'Lanjut →',kes_label:'Langkah 3 — Bagian B',kes_title:'Kesehatan & Gaya Hidup',qn4:'Pertanyaan 4',q4:'Apakah kamu merokok?',q4a:'Tidak Pernah',q4b:'Mantan Perokok',q4c:'Perokok Aktif',qn5:'Pertanyaan 5',q5:'Apakah kamu pernah diberitahu dokter, suster, atau penyedia layanan kesehatan lain bahwa kamu menderita Diabetes?',q_ya:'Ya',q_tidak:'Tidak',qn6:'Pertanyaan 6',q6:'Apakah kamu pernah terdiagnosa atau menurut pengetahuanmu memiliki kondisi seperti penyakit jantung koroner, stroke, atau penyakit jantung dan pembuluh darah lainnya?',q_ya2:'Ya',q_tidak2:'Tidak',qn7:'Pertanyaan 7',q7:'Apakah kamu tahu ukuran tekanan darah kamu?',q7a:'Ya',q7b:'Tidak',sys_lbl:'Sistolik (mmHg)',dia_lbl:'Diastolik (mmHg)',qn8:'Pertanyaan 8',q8:'Berapa kali kamu olahraga dalam satu minggu?',ex0:'Tidak ada',ex1:'1× seminggu',ex2:'2 – 3× seminggu',ex3:'> 3× seminggu',err4:'⚠ Mohon jawab semua pertanyaan terlebih dahulu.',btn_back3:'← Kembali',btn_hitung:'Hitung Risiko →',r_rendah:'Rendah',r_sedang:'Sedang',r_tinggi:'Tinggi',r_rendah2:'Rendah',r_sedang2:'Sedang',r_tinggi2:'Tinggi',strip_skor:'Total Skor',strip_risiko:'Risiko',rec_lbl:'Rekomendasi Tindakan',fas_lbl:'Fasilitas Kesehatan Terdekat',qr_lbl:'Rujukan Digital',qr_sub:'Tunjukkan ke RSUD Mangusada Badung',fhir_lbl:'SATUSEHAT · FHIR HL7',copy_fhir:'Salin JSON FHIR',btn_detail:'Lihat Rincian Perhitungan →',btn_restart:'🔄 Mulai Ulang',calc_lbl:'Rincian Skor',calc_title:'Perhitungan Risiko',skala_lbl:'Skala Acuan',leg1a:'Rendah',leg1b:'— Skor < 4 poin · Risiko <10%',leg2a:'Sedang',leg2b:'— Skor 4–6 poin · Risiko 10–20%',leg3a:'Tinggi',leg3b:'— Skor ≥7 poin · Risiko >20%',bd_umum:'Informasi Umum',bd_kes:'Kesehatan & Gaya Hidup',total_lbl:'Total Akumulasi',poin_lbl:'Poin',btn_back4:'← Hasil',btn_restart2:'Mulai Ulang'},
+  bal:{lbl_screening:'Skrining Kesehatan Jantung',landing_h1:'Napi Ragane<br>Bahaya Ring Jantung?',landing_sub:'Ayo Terang ja Mangkin',f1:'Skrining Bahaya',f2:'Rekomendasi Faskes',f3:'SATUSEHAT FHIR',cek_btn:'Ngawit Skrining',landing_footer:'FKIK Universitas Warmadewa · Kabupaten Badung',s1:'Pengenalan',s2:'Persetujuan',s3:'Kuisioner',s4:'Pikolih',s5:'Rujukan',s1b:'Pengenalan',s2b:'Persetujuan',s3b:'Kuisioner',s4b:'Pikolih',s5b:'Rujukan',s1c:'Pengenalan',s2c:'Persetujuan',s3c:'Kuisioner',s4c:'Pikolih',s5c:'Rujukan',s1d:'Pengenalan',s2d:'Persetujuan',s3d:'Kuisioner',s4d:'Pikolih',s5d:'Rujukan',s1e:'Pengenalan',s2e:'Persetujuan',s3e:'Kuisioner',s4e:'Pikolih',s5e:'Rujukan',s5f:'Rujukan',pen_label:'Langkah 1 saking 5',pen_title:'Rahajeng Rauh',pen_sub:'Website Skrining Jantung Kabupaten Badung',pen_about_lbl:'Badung Heart',pen_about:'Merupakan website <strong style="color:var(--tx)">skrining jantung</strong> sane madue tujuan ngidentifikasi bahaya penyakit jantung saking awal miwah memfasilitasi rujukan gelis ka fasilitas pelayanan kesehatan sane kasuksedang ring Kabupaten Badung.',alur_label:'Alur Pengisian',flow1a:'Pengenalan',flow1b:'Website Badung Heart',flow2a:'Persetujuan',flow2b:'Pengguna Website Badung Heart',flow3a:'Pengisian Kuisioner',flow3b:'Data kesehatan & gaya hidup',flow4a:'Pikolih',flow4b:'Skor bahaya jantung ragane',flow5a:'Rekomendasi Rujukan',flow5b:'Fasilitas kesehatan sane kasuksedang',btn_back:'← Mawali',btn_next:'Nglanjutang →',con_label:'Langkah 2 saking 5',con_title:'Persetujuan',con_sub:'Wacen miwah artinin dumun',c1:'Tiang sampun maos miwah ngerti indik tujuan, manfaat, miwah keterbatasan saking skrining jantung sane kaicen ring website puniki.',c2:'Tiang ngerti mungguing pikolih skrining puniki boya merupakan diagnosis medis miwah nenten nggentosin konsultasi langsung sareng tenaga kesehatan profesional.',c3:'Tiang purun ngicenin data sane kabutuhang kantun jujur miwah akurat antuk keperluan analisis bahaya kesehatan jantung.',c4:'Tiang ngerti mungguing data sane tiang icen pacang kaamanang miwah kaanggén wantah antuk keperluan skrining miwah pengembangan layanan.',c5:'Tiang satuju mungguing makasami keputusan terkait kesehatan tetep dados tanggung jawab tiang.',btn_setuju:'✓ Tiang Satuju, Nglanjutang',btn_tidak:'Nenten Satuju',info_label:'Langkah 3 — Bagian A',info_title:'Informasi Umum',nik_label:'NIK',nik_hint:'Antuk sinkronisasi SATUSEHAT',nama_label:'Adan Lengkap',gender_label:'1 — Jenis Kelamin',g_male:'Muani',g_female:'Istri',age_label:'2 — Umur',age_ph:'Pilih rentang umur',body_label:'3 — Beban & Tegeh Awak',err3:'⚠ Jangkepang dumun makasami data.',btn_back2:'← Mawali',btn_next2:'Nglanjutang →',kes_label:'Langkah 3 — Bagian B',kes_title:'Kesehatan & Gaya Hidup',qn4:'Pitakon 4',q4:'Napi ragane ngisep bako?',q4a:'Nenten Naenin',q4b:'Mantan Pengisep',q4c:'Pengisep Aktif',qn5:'Pitakon 5',q5:'Napi ragane naenin kauningin dokter mungguing ragane menderita Diabetes?',q_ya:'Inggih',q_tidak:'Nenten',qn6:'Pitakon 6',q6:'Napi ragane naenin terdiagnosa utawi manut pengetahuan ragane, madue kondisi sakadi penyakit jantung koroner, stroke, utawi penyakit jantung miwah pembuluh darah lainnya?',q_ya2:'Inggih',q_tidak2:'Nenten',qn7:'Pitakon 7',q7:'Napi ragane uning ukuran tekanan darah ragane?',q7a:'Inggih',q7b:'Nenten',sys_lbl:'Sistolik (mmHg)',dia_lbl:'Diastolik (mmHg)',qn8:'Pitakon 8',q8:'Kuda riihin ragane olahraga ring selantang asasih?',ex0:'Nenten wenten',ex1:'1× selantang seminggu',ex2:'2 – 3× selantang seminggu',ex3:'> 3× selantang seminggu',err4:'⚠ Sumawalin jawab makasami pitakon dumun.',btn_back3:'← Mawali',btn_hitung:'Hitung Bahaya →',r_rendah:'Aas',r_sedang:'Tengah',r_tinggi:'Tegeh',r_rendah2:'Aas',r_sedang2:'Tengah',r_tinggi2:'Tegeh',strip_skor:'Total Skor',strip_risiko:'Bahaya',rec_lbl:'Rekomendasi Tindakan',fas_lbl:'Fasilitas Kesehatan Kasuksedang',qr_lbl:'Rujukan Digital',qr_sub:'Tuduhang ka RSUD Mangusada Badung',fhir_lbl:'SATUSEHAT · FHIR HL7',copy_fhir:'Salin JSON FHIR',btn_detail:'Tingalin Rincian Perhitungan →',btn_restart:'🔄 Ngawit Malih',calc_lbl:'Rincian Skor',calc_title:'Perhitungan Bahaya',skala_lbl:'Skala Acuan',leg1a:'Aas',leg1b:'— Skor < 4 poin · Bahaya <10%',leg2a:'Tengah',leg2b:'— Skor 4–6 poin · Bahaya 10–20%',leg3a:'Tegeh',leg3b:'— Skor ≥7 poin · Bahaya >20%',bd_umum:'Informasi Umum',bd_kes:'Kesehatan & Gaya Hidup',total_lbl:'Total Akumulasi',poin_lbl:'Poin',btn_back4:'← Pikolih',btn_restart2:'Ngawit Malih',s5f:'Rujukan'}
+};
+function goTo(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));const p=document.getElementById(id);if(p){p.classList.add('active');window.scrollTo(0,0)}}
+function pickPill(el,key,val){el.closest('.pills').querySelectorAll('.pill').forEach(p=>{p.classList.remove('on')});el.classList.add('on');S[key]=val}
+document.getElementById('weight').addEventListener('input',calcBMI);
+document.getElementById('height').addEventListener('input',calcBMI);
+function calcBMI(){const w=+document.getElementById('weight').value,h=+document.getElementById('height').value,el=document.getElementById('bmi-preview');if(w>0&&h>0){const b=w/((h/100)**2);el.textContent=`BMI ${b.toFixed(1)} — ${b<18.5?'Kurang':b<26?'Normal':b<30?'Berlebih':'Obesitas'}`}else el.textContent=''}
+function showBP(v){document.getElementById('bp-wrap').style.display=v?'grid':'none'}
+function validatePage3(){const n=document.getElementById('nama').value.trim(),a=document.getElementById('age').value,w=document.getElementById('weight').value,h=document.getElementById('height').value;if(!S.gender||!a||!w||!h||!n){const e=document.getElementById('err3');e.style.display='block';setTimeout(()=>e.style.display='none',3e3);return}S.nik=document.getElementById('nik').value.trim();S.nama=n;S.age=+a;S.weight=+w;S.height=+h;S.bmi=S.weight/((S.height/100)**2);goTo('page-4')}
+function validatePage4(){if(!S.smoking||!S.diabetes||!S.cvd||!S.knowsBP||!S.exercise){const e=document.getElementById('err4');e.style.display='block';setTimeout(()=>e.style.display='none',3e3);return}if(S.knowsBP==='yes'){const sv=document.getElementById('systolic').value;if(!sv){const e=document.getElementById('err4');e.style.display='block';setTimeout(()=>e.style.display='none',3e3);return}S.systolic=+sv;S.diastolic=+(document.getElementById('diastolic').value)||80}compute()}
+function compute(){let s=0,bd={};
+  const gS=S.gender==='male'?1:0;s+=gS;bd.gender={label:S.gender==='male'?'Laki-laki':'Perempuan',score:gS};
+  let aS=0;if(S.age<25)aS=-4;else if(S.age<=34)aS=-3;else if(S.age<=39)aS=-2;else if(S.age<=44)aS=0;else if(S.age<=49)aS=1;else if(S.age<=54)aS=2;else if(S.age<=59)aS=3;else aS=4;s+=aS;bd.age={label:S.age+'th',score:aS};
+  const b=S.bmi;let bS=0,bC='Normal';if(b<18.5){bS=-1;bC='Kurang'}else if(b<26){bS=0;bC='Normal'}else if(b<30){bS=1;bC='Berlebih'}else{bS=2;bC='Obesitas'}s+=bS;bd.bmi={label:`${b.toFixed(1)} (${bC})`,score:bS};S.bmiCat=bC;
+  let smS=0,smL='';if(S.smoking==='never'){smS=0;smL='Tidak Pernah'}else if(S.smoking==='former'){smS=3;smL='Mantan Perokok'}else{smS=4;smL='Perokok Aktif'}s+=smS;bd.smoking={label:smL,score:smS};
+  let bpS=0,bpL='Tidak diketahui';if(S.knowsBP==='yes'&&S.systolic){const sv=S.systolic;if(sv<130)bpS=0;else if(sv<140)bpS=1;else if(sv<160)bpS=2;else if(sv<180)bpS=3;else bpS=4;bpL=sv+' mmHg'}s+=bpS;bd.bp={label:bpL,score:bpS};
+  const dbS=S.diabetes==='yes'?2:0;s+=dbS;bd.diabetes={label:S.diabetes==='yes'?'Ya':'Tidak',score:dbS};
+  if(S.cvd==='yes')s=Math.max(s,7);bd.cvd={label:S.cvd==='yes'?'Ya (riwayat CVD)':'Tidak',score:S.cvd==='yes'?'*':'0'};
+  let exS=0,exL='';if(S.exercise==='none'){exS=2;exL='Tidak ada'}else if(S.exercise==='1x'){exS=1;exL='1× seminggu'}else if(S.exercise==='2-3x'){exS=0;exL='2–3× seminggu'}else{exS=-3;exL='>3× seminggu'}s+=exS;bd.exercise={label:exL,score:exS};
+  S.score=s;S.breakdown=bd;
+  if(s<4){S.gradeKey='rendah';S.grade='Risiko Rendah';S.pct='< 10%';S.gradeColor='#5AC48A'}else if(s<=6){S.gradeKey='sedang';S.grade='Risiko Sedang';S.pct='10–20%';S.gradeColor='#D4B060'}else{S.gradeKey='tinggi';S.grade='Risiko Tinggi';S.pct='> 20%';S.gradeColor='#E06050'}
+  render();goTo('page-5')}
+function render(){
+  const{score,bmi,bmiCat,grade,gradeKey,gradeColor,pct,breakdown}=S;
+  document.getElementById('res-sub').textContent=`${S.gender==='male'?'Laki-laki':'Perempuan'}, ${S.age} tahun`;
+  document.getElementById('res-pct').textContent=pct;document.getElementById('res-pct').style.color=gradeColor;
+  document.getElementById('res-grade-pill').innerHTML=`<span class="grade-pill grade-${gradeKey==='rendah'?'low':gradeKey==='sedang'?'mid':'high'}">${grade}</span>`;
+  const pos=gradeKey==='rendah'?Math.min(8+score*6,30):gradeKey==='sedang'?Math.min(38+(score-4)*8,60):Math.min(68+(score-7)*4,92);
+  setTimeout(()=>{document.getElementById('meter-thumb').style.left=pos+'%';document.getElementById('meter-thumb2').style.left=pos+'%'},300);
+  document.getElementById('res-desc').textContent=gradeKey==='rendah'?'Kondisi jantung Anda relatif baik. Pertahankan gaya hidup sehat dengan pola makan bergizi dan olahraga teratur.':gradeKey==='sedang'?'Terdapat beberapa faktor risiko yang perlu diperhatikan. Lakukan kontrol berkala ke Puskesmas terdekat.':'Risiko jantung Anda tergolong tinggi. Segera konsultasikan kondisi Anda ke dokter spesialis jantung.';
+  document.getElementById('strip-score').textContent=score;document.getElementById('strip-score').style.color=gradeColor;
+  document.getElementById('strip-bmi').textContent=bmi.toFixed(1);
+  document.getElementById('strip-pct').textContent=pct;document.getElementById('strip-pct').style.color=gradeColor;
+  document.getElementById('rec-box').innerHTML=gradeKey==='rendah'?'<strong>📗 Edukasi Preventif</strong><br>Pertahankan gaya hidup sehat, pola makan bergizi seimbang, dan rutinitas olahraga minimal 30 menit sebanyak 3–5× per minggu. Pantau tekanan darah secara berkala setiap 6 bulan.':gradeKey==='sedang'?'<strong>📋 Monitoring Rutin</strong><br>Lakukan kontrol berkala ke Puskesmas terdekat untuk memantau faktor risiko (tekanan darah, berat badan, kadar gula darah). Jadwalkan pemeriksaan setiap 3 bulan.':'<strong>🚨 Intervensi Medis Segera</strong><br>Sistem mendeteksi kondisi berisiko tinggi. Segera lakukan pemeriksaan ke RSUD Mangusada Badung untuk evaluasi spesialis jantung. Surat Rujukan Digital tersedia di bawah.';
+  renderHospitals(gradeKey);
+  if(gradeKey==='tinggi'){document.getElementById('qr-section').style.display='block';renderQR()}
+  document.getElementById('calc-grade').textContent=grade;document.getElementById('calc-grade').style.color=gradeColor;
+  document.getElementById('calc-total').textContent=score;document.getElementById('calc-total').style.color=gradeColor;
+  const mkRows=rows=>rows.map(r=>{const n=typeof r.s==='number'?r.s:null,cls=n===null?'zero':n>0?'pos':n<0?'neg':'zero',disp=n===null?r.s:n>0?`+${n}`:n===0?'0':n;return`<div class="score-row"><div><p style="font-size:13px">${r.n}</p><p class="caption">${r.v}</p></div><span class="score-pt ${cls}">${disp}</span></div>`}).join('');
+  document.getElementById('bd-umum').innerHTML=mkRows([{n:'Jenis Kelamin',v:breakdown.gender.label,s:breakdown.gender.score},{n:'Usia',v:breakdown.age.label,s:breakdown.age.score},{n:'IMT / BMI',v:breakdown.bmi.label,s:breakdown.bmi.score},{n:'Merokok',v:breakdown.smoking.label,s:breakdown.smoking.score}]);
+  document.getElementById('bd-kes').innerHTML=mkRows([{n:'Tekanan Darah',v:breakdown.bp.label,s:breakdown.bp.score},{n:'Diabetes',v:breakdown.diabetes.label,s:breakdown.diabetes.score},{n:'Riwayat CVD',v:breakdown.cvd.label,s:breakdown.cvd.score},{n:'Olahraga',v:breakdown.exercise.label,s:breakdown.exercise.score}]);
+  buildFHIR()}
+function renderHospitals(g){
+  const svgH=`<svg width="20" height="20" style="color:var(--gold)"><use href="#ic-hospital"/></svg>`;
+  const svgC=`<svg width="20" height="20" style="color:var(--tx2)"><use href="#ic-clinic"/></svg>`;
+  const svgE=`<svg width="20" height="20" style="color:#E06050"><use href="#ic-emergency"/></svg>`;
+  const svgPin=`<svg width="11" height="11" style="vertical-align:-1px;color:var(--tx3)"><use href="#ic-pin"/></svg>`;
+  const svgPh=`<svg width="11" height="11" style="vertical-align:-1px;color:var(--gold)"><use href="#ic-phone"/></svg>`;
+  const data={rendah:[{icon:svgC,name:'Puskesmas Mengwi I',addr:'Jl. Raya Mengwi, Badung',tel:'(0361) 829064',map:'https://maps.google.com/?q=Puskesmas+Mengwi+Badung'},{icon:svgC,name:'Puskesmas Abiansemal I',addr:'Br. Dinas Binoh, Abiansemal',tel:'(0361) 8944023',map:'https://maps.google.com/?q=Puskesmas+Abiansemal+Badung'},{icon:svgC,name:'Puskesmas Kuta I',addr:'Jl. Raya Kuta, Badung',tel:'(0361) 754394',map:'https://maps.google.com/?q=Puskesmas+Kuta+Badung'}],sedang:[{icon:svgH,name:'RS Kasih Ibu Kedonganan',addr:'Jl. Raya Tuban, Kuta, Badung',tel:'(0361) 754077',map:'https://maps.google.com/?q=RS+Kasih+Ibu+Kedonganan'},{icon:svgH,name:'RSIA Puri Bunda',addr:'Jl. Gatot Subroto No.9, Denpasar',tel:'(0361) 436785',map:'https://maps.google.com/?q=RSIA+Puri+Bunda+Denpasar'},{icon:svgC,name:'Puskesmas Mengwi II',addr:'Jl. Raya Kapal, Mengwi, Badung',tel:'(0361) 829180',map:'https://maps.google.com/?q=Puskesmas+Mengwi+II+Badung'}],tinggi:[{icon:svgE,name:'RSUD Mangusada Badung',addr:'Jl. Raya Kapal No.1, Mengwi, Badung',tel:'(0361) 4204171',map:'https://maps.google.com/?q=RSUD+Mangusada+Badung',urgent:true},{icon:svgH,name:'RS Siloam Bali',addr:'Jl. Sunset Road No.818, Kuta',tel:'(0361) 779900',map:'https://maps.google.com/?q=RS+Siloam+Bali'},{icon:svgH,name:'RS Kasih Ibu Kedonganan',addr:'Jl. Raya Tuban, Kuta, Badung',tel:'(0361) 754077',map:'https://maps.google.com/?q=RS+Kasih+Ibu+Kedonganan'}]};
+  document.getElementById('hospital-list').innerHTML=data[g].map(h=>`<div class="hospital${h.urgent?' urgent':''}" onclick="window.open('${h.map}','_blank')"><div class="hospital-icon">${h.icon}</div><div style="flex:1"><p style="font-size:14px;font-weight:500;color:${h.urgent?'#E06050':'var(--tx)'};margin-bottom:3px">${h.name}${h.urgent?'  <span style="font-size:9px;font-family:Cinzel,serif;letter-spacing:.06em;background:rgba(184,50,40,.2);padding:2px 8px;border-radius:3px;color:#E06050">RUJUKAN UTAMA</span>':''}</p><p class="caption">${svgPin} ${h.addr}</p><p style="font-size:12px;color:var(--gold);margin-top:2px">${svgPh} ${h.tel}</p></div><svg width="14" height="14" style="color:var(--tx3);flex-shrink:0;margin-top:2px"><use href="#ic-arrow-right"/></svg></div>`).join('')}
+function renderQR(){
+  const seed=S.nik||'0000000000000000',ref='JCS-'+seed.slice(-6)+'-BDHRT-'+Date.now().toString(36).slice(-4).toUpperCase();
+  document.getElementById('qr-id-txt').textContent=ref;
+  const n=21;let cells='';
+  for(let r=0;r<n;r++)for(let c=0;c<n;c++){const ch=seed.charCodeAt((r*n+c)%seed.length),dark=((ch+r*7+c*3)%3!==0)||(r<7&&c<7)||(r<7&&c>13)||(r>13&&c<7);if(dark)cells+=`<rect x="${c*5}" y="${r*5}" width="4" height="4" fill="#111"/>`}
+  document.getElementById('qr-svg').innerHTML=`<svg width="108" height="108" viewBox="0 0 ${n*5} ${n*5}" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#fff"/>${cells}</svg>`}
+function buildFHIR(){
+  const uid='JCS-'+(S.nik||'0000000000000000').slice(-10)+'-'+Date.now().toString(36).slice(-5),iCode=S.gradeKey==='tinggi'?'H':S.gradeKey==='sedang'?'N':'L';
+  const bundle=[{resourceType:'Patient',id:uid+'-P',identifier:[{system:'http://sys-ids.kemkes.go.id/nik',value:S.nik||''}],name:[{text:S.nama||'Anonymous'}]},{resourceType:'Observation',id:uid+'-O',status:'final',category:[{coding:[{system:'http://terminology.hl7.org/CodeSystem/observation-category',code:'vital-signs',display:'Vital Signs'}]}],code:{coding:[{system:'http://loinc.org',code:'74201-5',display:'Cardiovascular disease 10Y risk'}]},subject:{reference:`Patient/${uid}-P`},effectiveDateTime:new Date().toISOString(),valueString:`${S.grade} (${S.pct})`,interpretation:[{coding:[{system:'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation',code:iCode,display:iCode==='H'?'High':iCode==='N'?'Normal':'Low'}]}],component:[{code:{coding:[{system:'http://loinc.org',code:'39156-5',display:'BMI'}]},valueQuantity:{value:parseFloat(S.bmi.toFixed(1)),unit:'kg/m2'}},...(S.systolic?[{code:{coding:[{system:'http://loinc.org',code:'8480-6',display:'Systolic BP'}]},valueQuantity:{value:S.systolic,unit:'mmHg'}}]:[])]}];
+  S.fhirJson=JSON.stringify(bundle,null,2);
+  document.getElementById('fhir-out').innerHTML='<span style="opacity:.4">// Transformasi Algoritma JCS → JSON-FHIR HL7\n\n</span>'+S.fhirJson.replace(/"([^"]+)":/g,'<span class="fhir-k">"$1"</span>:').replace(/: "([^"]+)"/g,': <span class="fhir-s">"$1"</span>').replace(/: ([\d.]+)/g,': <span class="fhir-n">$1</span>')}
+function copyFHIR(){if(!S.fhirJson)return;navigator.clipboard.writeText(S.fhirJson).then(()=>{const b=document.getElementById('fhir-copy-btn'),o=b.textContent;b.textContent='✓ Tersalin!';setTimeout(()=>b.textContent=o,2e3)})}
+function toggleLang(){S.lang=S.lang==='id'?'bal':'id';document.querySelectorAll('.lang-btn').forEach(b=>b.textContent=S.lang==='id'?'🇮🇩 Bali':'🪷 Indonesia');applyLang()}
+function applyLang(){const t=T[S.lang];document.querySelectorAll('[data-id]').forEach(el=>{const k=el.getAttribute('data-id');if(t[k]!==undefined)el.innerHTML=t[k]})}
+applyLang();
+</script>
+</body>
+</html>
