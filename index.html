@@ -550,18 +550,17 @@ select.field-input option{background:#1a0f0f}
 
 <script>
 // ── URL API Google Sheets ─────────────────────────────────────
-// Ganti dengan URL dari Apps Script deployment kamu
-const SHEET_URL = 'https://script.google.com/macros/s/GANTI_INI/exec';
+// ⬇️ GANTI TEKS DI BAWAH INI DENGAN URL APPS SCRIPT KAMU
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbz2ZBvPc96D3tPS6CBrwu3zpwku8GrPsGRGEUR2TJszGfmFPImH6-EsSzNZrEFeXDUw/exec';
 
 // ── Fungsi kirim data ke Google Sheets ───────────────────────
 function sendToSheet() {
-  // Hanya kirim jika URL sudah diisi
-  if (SHEET_URL.includes('GANTI_INI')) return;
+  if (!SHEET_URL || SHEET_URL.includes('GANTI_DENGAN')) return;
 
   fetch(SHEET_URL, {
     method : 'POST',
-    mode   : 'no-cors', // wajib untuk Apps Script
-    headers: { 'Content-Type': 'application/json' },
+    mode   : 'no-cors',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // ✅ fix HP
     body   : JSON.stringify({
       nik      : S.nik,
       nama     : S.nama,
@@ -569,18 +568,18 @@ function sendToSheet() {
       age      : S.age,
       weight   : S.weight,
       height   : S.height,
-      bmi      : S.bmi.toFixed(1),
+      bmi      : parseFloat(S.bmi.toFixed(1)),
       smoking  : S.smoking,
       diabetes : S.diabetes,
       cvd      : S.cvd,
-      systolic : S.systolic,
-      diastolic: S.diastolic,
+      systolic : S.systolic  || null,
+      diastolic: S.diastolic || null,
       exercise : S.exercise,
       score    : S.score,
       grade    : S.grade,
       pct      : S.pct,
     }),
-  }).catch(() => {}); // silent — tidak ganggu UX jika gagal
+  }).catch(err => console.warn('Sheet:', err));
 }
 const S={lang:'id',gender:null,age:null,weight:null,height:null,smoking:null,diabetes:null,cvd:null,knowsBP:null,systolic:null,diastolic:null,exercise:null,nik:'',nama:'',score:0,bmi:0,grade:'',gradeKey:'',pct:'',breakdown:{},fhirJson:'',gradeColor:''};
 const T={
@@ -606,8 +605,7 @@ function compute(){let s=0,bd={};
   let exS=0,exL='';if(S.exercise==='none'){exS=2;exL='Tidak ada'}else if(S.exercise==='1x'){exS=1;exL='1× seminggu'}else if(S.exercise==='2-3x'){exS=0;exL='2–3× seminggu'}else{exS=-3;exL='>3× seminggu'}s+=exS;bd.exercise={label:exL,score:exS};
   S.score=s;S.breakdown=bd;
   if(s<4){S.gradeKey='rendah';S.grade='Risiko Rendah';S.pct='< 10%';S.gradeColor='#5AC48A'}else if(s<=6){S.gradeKey='sedang';S.grade='Risiko Sedang';S.pct='10–20%';S.gradeColor='#D4B060'}else{S.gradeKey='tinggi';S.grade='Risiko Tinggi';S.pct='> 20%';S.gradeColor='#E06050'}
-  render();goTo('page-5')}
-  sendToSheet();
+  render();goTo('page-5');sendToSheet();}
 function render(){
   const{score,bmi,bmiCat,grade,gradeKey,gradeColor,pct,breakdown}=S;
   document.getElementById('res-sub').textContent=`${S.gender==='male'?'Laki-laki':'Perempuan'}, ${S.age} tahun`;
